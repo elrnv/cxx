@@ -28,11 +28,22 @@ impl Crate {
         }
         for (i, header_dir) in self.header_dirs.iter().enumerate() {
             if header_dir.exported {
-                println!(
-                    "cargo:CXXBRIDGE_DIR{}={}",
-                    i,
-                    header_dir.path.to_string_lossy(),
-                );
+                #[cfg(target_os = "windows")]
+                {
+                    println!(
+                        "cargo:CXXBRIDGE_DIR{}={:?}",
+                        i,
+                        header_dir.path.to_string_lossy(),
+                    );
+                }
+                #[cfg(not(target_os = "windows"))]
+                {
+                    println!(
+                        "cargo:CXXBRIDGE_DIR{}={}",
+                        i,
+                        header_dir.path.to_string_lossy(),
+                    );
+                }
             }
         }
     }
